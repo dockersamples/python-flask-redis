@@ -6,8 +6,6 @@ services:
   web:
     build:
       context: .
-      target: dev-envs
-    stop_signal: SIGINT
     ports:
       - '8000:8000'
     volumes:
