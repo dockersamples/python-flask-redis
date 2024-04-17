@@ -1,10 +1,9 @@
-# Base image for Python 3.10 with Alpine Linux
 FROM python:3.10-alpine
 
 # Set working directory
 WORKDIR /code
-
-# Install dependencies
+COPY requirements.txt /code
+# Install dependencies (assuming requirements.txt is in the same directory as Dockerfile)
 RUN pip3 install -r requirements.txt
 
 # Copy your application code
