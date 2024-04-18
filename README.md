@@ -9,29 +9,28 @@ Building a Python/Flask + Redis database using Docker
  cd python-flask-redis
 ```
 
-## Bringing up the service container
+## Building the image
 
 ```
- docker compose up -d --build
+docker image build -t flask-app .
 ```
 
-```
-curl localhost:8000
-This webpage has been viewed 1 time(s)%
-curl localhost:8000
-This webpage has been viewed 2 time(s)%
-```
-
-## Monitor the Redis database
+## Create a network
 
 ```
-redis-cli
-127.0.0.1:6379> monitor
-OK
-1713378794.252766 [0 172.21.0.3:58168] "INCRBY" "hits" "1"
-1713378794.257706 [0 172.21.0.3:58168] "GET" "hits"
-1713378796.555852 [0 172.21.0.3:58168] "INCRBY" "hits" "1"
-1713378796.557840 [0 172.21.0.3:58168] "GET" "hits"
-1713378796.752718 [0 172.21.0.3:58168] "INCRBY" "hits" "1"
-1713378796.753787 [0 172.21.0.3:58168] "GET" "hits"
+docker network create -d bridge demonet
 ```
+
+## Bring up Redis
+
+```
+$ docker container run -d --name redis-server --network demonet redis
+```
+
+## Bring up Flask
+
+```
+$ docker container run -d --network demonet --name flask-app --env REDIS_HOST=redis-server -p 5000:5000 flask-app
+```
+
+
