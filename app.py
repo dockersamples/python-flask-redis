@@ -10,4 +10,4 @@ redis = Redis(host=os.environ.get('REDIS_HOST', '127.0.0.1'), port=6379)
 @app.route('/')
 def hello():
     redis.incr('hits')
-    return f"This webpage has viewed {redis.get('hits').decode('utf-8')} times and hostname is {socket.gethostname()}.\n"
+    return f"This webpage has been viewed {redis.get('hits').decode('utf-8')} times and hostname is {socket.gethostname()}.\n"
