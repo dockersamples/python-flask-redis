@@ -1,22 +1,18 @@
-FROM python:3.10-alpine
+FROM python:3.11-slim
 
-# Set working directory
-WORKDIR /code
-COPY requirements.txt /code
-# Install dependencies (assuming requirements.txt is in the same directory as Dockerfile)
-RUN pip3 install -r requirements.txt
+RUN pip3 install flask redis && \
+    groupadd -r demouser && useradd -r -g demouser demouser && \
+    mkdir /src && \
+    chown -R demouser:demouser /src
 
-# Copy your application code
-COPY . /code
+USER demouser
 
-# Install development tools (optional)
-RUN apk update && apk add git bash
+COPY app.py /src/app.py
 
-# Create user and group for development (optional)
-RUN apk add --no-cache shadow gettext \
-  && addgroup -S docker \
-  && adduser -S --shell /bin/bash --ingroup docker vscode
+WORKDIR /src
 
-# Define entrypoint and command
-ENTRYPOINT ["python3"]
-CMD ["app.py"]
+ENV FLASK_APP=app.py REDIS_HOST=redis
+
+EXPOSE 5000
+
+CMD ["flask", "run", "-h", "0.0.0.0"]
